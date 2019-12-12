@@ -38,48 +38,4 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
   public int getItemCount() {
     return this.restaurants.size();
   }
-  //
-  //  @Override
-  //  public int getCount() {
-  //    return restaurants.size();
-  //  }
-  //
-  //  @Override
-  //  public Restaurant getItem(int i) {
-  //    return this.restaurants.get(i);
-  //  }
-  //
-  //  @Override
-  //  public long getItemId(int i) {
-  //    return i;
-  //  }
-  //
-  //  @TargetApi(Build.VERSION_CODES.KITKAT)
-  //  @Override
-  //  public View getView(final int i, View view, ViewGroup viewGroup) {
-  //    if (view == null) {
-  //      view = LayoutInflater.from(c).inflate(R.layout.restaurant_list, viewGroup, false);
-  //    }
-  //
-  //    ImageView restaurantImage = view.findViewById(R.id.restaurantImage);
-  //    TextView restaurantName = view.findViewById(R.id.restaurantName);
-  //    TextView restaurantDescription = view.findViewById(R.id.restaurantDescription);
-  //    TextView restaurantStatus = view.findViewById(R.id.restaurantStatus);
-  //
-  //    final Restaurant restaurant = this.restaurants.get(i);
-  //
-  //    Picasso.get().load(restaurant.getCover_img_url()).into(restaurantImage);
-  //    restaurantName.setText(restaurant.getName());
-  //    restaurantDescription.setText(restaurant.getDescription());
-  //    restaurantStatus.setText(restaurant.getStatus());
-  //
-  //    view.setOnClickListener(new View.OnClickListener() {
-  //      @Override
-  //      public void onClick(View view) {
-  //        Toast.makeText(c, "You clicked on " + restaurant.getName(), Toast.LENGTH_SHORT).show();
-  //      }
-  //    });
-  //
-  //    return view;
-  //  }
 }
