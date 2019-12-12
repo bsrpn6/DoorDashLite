@@ -8,12 +8,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-class ApiClientBuilder {
+public class DoorDashClient {
   private static final String BASE_URL = "https://api.doordash.com/";
 
-  private static Retrofit getClient() {
+  public static Retrofit getClient() {
     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -41,12 +42,13 @@ class ApiClientBuilder {
     return new Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().create()))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(httpClient.build())
         .build();
   }
 
-  static ApiClient getMGClient() {
+  public static DoorDashApi getDoorDashApi() {
 
-    return getClient().create(ApiClient.class);
+    return getClient().create(DoorDashApi.class);
   }
 }

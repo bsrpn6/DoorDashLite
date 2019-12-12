@@ -1,72 +1,87 @@
 package me.brandonray.doordashlite;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.ArrayList;
-import me.brandonray.doordashlite.adapters.RestaurantListAdapter;
+import me.brandonray.doordashlite.adapters.RestaurantAdapter;
 import me.brandonray.doordashlite.models.Restaurant;
-import me.brandonray.doordashlite.services.ApiService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import me.brandonray.doordashlite.ui.MainPresenter;
+import me.brandonray.doordashlite.ui.MainViewInterface;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainViewInterface {
 
-  ListView listView;
   String TAG = "MainActivity";
+
+  MainPresenter mainPresenter;
+  SwipeRefreshLayout pullToRefresh;
+  RecyclerView recyclerView;
   ArrayList<Restaurant> restaurants = new ArrayList<>();
-  RestaurantListAdapter restaurantListAdapter;
-  ProgressBar progressBar;
+  RestaurantAdapter restaurantListAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    progressBar = findViewById(R.id.progressBar);
-    getdata();
+
+    ((DoorDashLiteApplication) getApplication())
+        .getApplicationComponent()
+        .inject(MainActivity.this);
+
+    createPullToRefreshLayout();
+    createListView();
+    setupMVP();
   }
 
-  public void getdata() {
-    // TODO - Extract this logic out of MainActivity and add subscriber method
-    try {
-      new ApiService()
-          .getRestaurantList(
-              new Callback<ArrayList<Restaurant>>() {
-                @Override
-                public void onResponse(
-                    Call<ArrayList<Restaurant>> call, Response<ArrayList<Restaurant>> response) {
-                  Log.d(TAG, "onResponse: response..." + response);
-                  restaurants = response.body();
-                  progressBar.setVisibility(View.GONE);
-                  createListView();
-                }
+  @Override
+  protected void onResume() {
+    super.onResume();
+    getData();
+  }
 
-                @Override
-                public void onFailure(Call<ArrayList<Restaurant>> call, Throwable t) {
-                  // TODO - Add logic for when service call fails to let user know that application
-                  // launch unsuccessful
-                  Toast.makeText(
-                          MainActivity.this,
-                          "Something went wrong...Error message: " + t.getMessage(),
-                          Toast.LENGTH_LONG)
-                      .show();
-                  Log.d(TAG, "onFailure: response...");
-                }
-              });
+  public void getData() {
+    pullToRefresh.setRefreshing(true);
+    mainPresenter.getRestaurants();
+  }
 
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
+  private void setupMVP() {
+    mainPresenter = new MainPresenter(this);
+  }
+
+  private void createPullToRefreshLayout() {
+    pullToRefresh = findViewById(R.id.swipeRefresh);
+    pullToRefresh.setOnRefreshListener(
+        new SwipeRefreshLayout.OnRefreshListener() {
+          @Override
+          public void onRefresh() {
+            getData();
+          }
+        });
   }
 
   public void createListView() {
-    restaurantListAdapter = new RestaurantListAdapter(getApplicationContext(), restaurants);
-    listView = findViewById(R.id.listRestaurants);
-    listView.setAdapter(restaurantListAdapter);
+    restaurantListAdapter = new RestaurantAdapter(getApplicationContext(), restaurants);
+    recyclerView = findViewById(R.id.listRestaurants);
+    recyclerView.setAdapter(restaurantListAdapter);
+  }
+
+  @Override
+  public void showToast(String s) {
+    Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+  }
+
+  @Override
+  public void refreshRestaurantList(ArrayList<Restaurant> restaurantArrayList) {
+    restaurants.clear();
+    restaurants.addAll(restaurantArrayList);
+    pullToRefresh.setRefreshing(false);
+    restaurantListAdapter.notifyDataSetChanged();
+  }
+
+  @Override
+  public void displayError(String s) {
+    showToast(s);
   }
 }

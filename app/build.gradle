@@ -10,6 +10,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    dataBinding {
+        enabled = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -21,16 +24,39 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+
+    //androidx
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.dagger:dagger:2.10'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.10"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.recyclerview:recyclerview-selection:1.1.0-beta01"
+
+    //dagger 2
+    implementation 'com.google.dagger:dagger:2.15'
+    implementation 'com.google.dagger:dagger-android-support:2.15'
+    implementation 'com.google.dagger:dagger-android:2.15'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+
+    //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+
+    //other
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.7.22'
-    androidTestImplementation 'org.mockito:mockito-android:2.7.22'
+    testImplementation 'org.mockito:mockito-core:2.21.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.21.0'
 }
